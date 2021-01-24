@@ -5,141 +5,243 @@ import {
 } from "code-surfer";
 import { github, vsDark } from "@code-surfer/themes";
 
+import wutImage from './assets/what.gif';
+
 export const theme = vsDark;
 
-# Hello 👋
+# ESpitting Code 👋
 
-You are using [MDX Deck](https://github.com/jxnblk/mdx-deck) and [Code Surfer](https://codesurfer.pomb.us)
-
----
-
-<CodeSurfer>
-
-```js title="This is a title" subtitle="and this a subtitle"
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
-}
-
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
-
-  if (!sit || ut < 1) {
-    return [];
-  }
-
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
-
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
-
-  return aliqua;
-}
-```
-
-```js
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit
-    ? consectetur(ipsum, 0, dolor < 0 ? 0 : dolor)
-    : [];
-}
-
-function adipiscing(...elit) {
-  if (!elit.sit) {
-    return [];
-  }
-
-  const sed = elit[0];
-  return eiusmod.tempor(sed) ? sed : [sed];
-}
-
-function incididunt(ipsum, ut = 1) {
-  ut = labore.et(amet(ut), 0);
-  const sit = ipsum == null ? 0 : ipsum.sit;
-
-  if (!sit || ut < 1) {
-    return [];
-  }
-
-  let dolore = 0;
-  let magna = 0;
-  const aliqua = new eiusmod(labore.ut(sit / ut));
-
-  while (dolore < sit) {
-    aliqua[magna++] = consectetur(
-      ipsum,
-      dolore,
-      (dolore += ut)
-    );
-  }
-
-  return aliqua;
-}
-```
-
-```diff 1[10:14],2[15:19],3[22:27],10:12
-
-```
-
-</CodeSurfer>
+Proyección de contenido con Angular
 
 ---
 
-<CodeSurferColumns themes={[vsDark, github]}>
+## Proyección de contenido 
+### ¿Qué significa?
+
+---
+
+<img src={wutImage} />
+
+---
+
+<CodeSurferColumns>
 
 <Step>
 
-```js
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
+```typescript title="Input de filtrado" subtitle="search-input.component.ts"
+@Component({
+  selector: 'app-search-input'
+})
+export class SearchInputComponent implements OnInit, OnDestroy {
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
 ```
 
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
+```html subtitle="search-input.component.html"
+<div class="container search-input">
+  <div class="input-group mb-3 input__container">
+    <div class="input-group-prepend">
+      <span
+        class="input-group-text"
+        id="basic-addon1"><img
+          src="assets/search-icon.svg"
+          alt="Search icon"></span>
+    </div>
+    <input
+      (input)="onNewQuery($event)"
+      type="text"
+      class="form-control"
+      placeholder="Búsqueda"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </div>
+</div>
 ```
 
 </Step>
 
 <Step>
 
-```js
-const lorem = (ipsum, dolor, sit) => {
-  const amet = dolor - ipsum;
-  return consectetur.adipiscing(
-    {
-      elit: sed.eiusmod(sit - dolor) / amet + 2,
-    },
-    (tempor, incididunt) => ipsum + amet * incididunt
-  );
-};
+```diff
 
-const magna = aliqua => aliqua.ut((enim, ad) => enim, 0);
 ```
 
-```js
-const minim = (ad, enim) => dolore.magna(ad / enim);
+```diff 10:16
 
-const sed = (eiusmod, tempor, incididunt) => {
-  const ut = tempor - eiusmod;
-  return labore.et(
-    {
-      amet: dolore.magna(incididunt - tempor) / ut + 2,
-    },
-    (aliqua, elit) => eiusmod + ut * elit
-  );
-};
+```
+
+</Step>
+
+<Step>
+
+```diff 15:17
+
+```
+
+```diff 11
+
+```
+
+</Step>
+
+<Step>
+
+```diff
+
+```
+
+```diff
+
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-search-input'
+})
+export class SearchInputComponent implements OnInit, OnDestroy {
+
+  @Input()
+  placeholder: string = 'Default';
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
+```
+
+```html
+<div class="container search-input">
+  <div class="input-group mb-3 input__container">
+    <div class="input-group-prepend">
+      <span
+        class="input-group-text"
+        id="basic-addon1"><img
+          src="assets/search-icon.svg"
+          alt="Search icon"></span>
+    </div>
+    <input
+      (input)="onNewQuery($event)"
+      type="text"
+      class="form-control"
+      [placeholder]="placeholder"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-search-input'
+})
+export class SearchInputComponent implements OnInit, OnDestroy {
+
+  @Input()
+  placeholder: string = 'Default';
+
+  @Input()
+  type: string = 'text';
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
+```
+
+```html
+<div class="container search-input">
+  <div class="input-group mb-3 input__container">
+    <div class="input-group-prepend">
+      <span
+        class="input-group-text"
+        id="basic-addon1"><img
+          src="assets/search-icon.svg"
+          alt="Search icon"></span>
+    </div>
+    <input
+      (input)="onNewQuery($event)"
+      [type]="type"
+      class="form-control"
+      [placeholder]="placeholder"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```diff 9:10
+```
+
+```diff 15
+
+```
+
+</Step>
+
+<Step>
+
+```diff
+```
+
+```diff
+
 ```
 
 </Step>
@@ -148,5 +250,1149 @@ const sed = (eiusmod, tempor, incididunt) => {
 
 ---
 
-docs:  
-[codesurfer.pomb.us](https://codesurfer.pomb.us)
+<CodeSurfer>
+
+```html subtitle="app.component.html"
+<div class="container main-content">
+  <div class="h1 main__title">
+    <h1>User Information</h1>
+  </div>
+
+  <app-search-input
+    placeholder="Custom"
+    (newQuery)="onNewQuery($event)"></app-search-input>
+
+</div>
+
+```
+
+```diff 6:8
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-search-input'
+})
+export class SearchInputComponent implements OnInit, OnDestroy {
+
+  @Input()
+  placeholder: string = 'Default';
+
+  @Input()
+  type: string = 'text';
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
+```
+
+```html
+<div class="container search-input">
+  <div class="input-group mb-3 input__container">
+    <div class="input-group-prepend">
+      <span
+        class="input-group-text"
+        id="basic-addon1"><img
+          src="assets/search-icon.svg"
+          alt="Search icon"></span>
+    </div>
+    <input
+      (input)="onNewQuery($event)"
+      [type]="type"
+      class="form-control"
+      [placeholder]="placeholder"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-search-input'
+})
+export class SearchInputComponent implements OnInit, OnDestroy {
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
+```
+
+```html
+<div class="container search-input">
+  <div class="input-group mb-3 input__container">
+    <div class="input-group-prepend">
+      <span
+        class="input-group-text"
+        id="basic-addon1"><img
+          src="assets/search-icon.svg"
+          alt="Search icon"></span>
+    </div>
+    <ng-content></ng-content>
+  </div>
+</div>
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+<CodeSurfer>
+
+```html subtitle="app.component.html"
+<div class="container main-content">
+  <div class="h1 main__title">
+    <h1>User Information</h1>
+  </div>
+
+  <app-search-input
+    placeholder="Custom"
+    (newQuery)="onNewQuery($event)"></app-search-input>
+
+</div>
+
+```
+
+```html subtitle="app.component.html"
+<div class="container main-content">
+  <div class="h1 main__title">
+    <h1>User Information</h1>
+  </div>
+
+  <app-projected-search-input (newQuery)="onNewQuery($event)">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Búsqueda"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </app-projected-search-input>
+
+</div>
+```
+
+```diff 7:12
+```
+
+```diff 8[7:11],10[7:18]
+```
+
+```diff 6[31:62]
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer>
+
+```typescript
+@Component({
+  selector: 'app-search-input'
+})
+export class SearchInputComponent implements OnInit, OnDestroy {
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
+```
+
+```diff 15:17
+```
+
+```diff 15[17:27]
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer>
+
+```html
+<input
+  (input)="onNewQuery($event)"
+  [type]="type"
+  class="form-control"
+  [placeholder]="placeholder"
+  aria-label="Búsqueda"
+  aria-describedby="basic-addon1">
+```
+
+```diff 2
+```
+
+```html
+<div class="container search-input">
+  <div class="input-group mb-3 input__container">
+    <div class="input-group-prepend">
+      <span
+        class="input-group-text"
+        id="basic-addon1"><img
+          src="assets/search-icon.svg"
+          alt="Search icon"></span>
+    </div>
+    <input
+      (input)="onNewQuery($event)"
+      [type]="type"
+      class="form-control"
+      [placeholder]="placeholder"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </div>
+</div>
+```
+
+```html
+<div class="container search-input">
+  <div 
+    (input)="onNewQuery($event)" 
+    class="input-group mb-3 input__container">
+    <div class="input-group-prepend">
+      <span
+        class="input-group-text"
+        id="basic-addon1"><img
+          src="assets/search-icon.svg"
+          alt="Search icon"></span>
+    </div>
+    <input
+      [type]="type"
+      class="form-control"
+      [placeholder]="placeholder"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </div>
+</div>
+```
+
+```diff 2[4:7]
+```
+
+```html
+<div 
+  (input)="onNewQuery($event)" 
+  class="container search-input">
+  <div class="input-group mb-3 input__container">
+    <div class="input-group-prepend">
+      <span
+        class="input-group-text"
+        id="basic-addon1"><img
+          src="assets/search-icon.svg"
+          alt="Search icon"></span>
+    </div>
+    <input
+      [type]="type"
+      class="form-control"
+      [placeholder]="placeholder"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </div>
+</div>
+```
+
+```diff 1[2:5]
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer>
+
+```typescript
+@Component({
+  selector: 'app-projected-search-input',
+  templateUrl: './projected-search-input.component.html',
+  styleUrls: ['./projected-search-input.component.scss']
+})
+export class ProjectedSearchInputComponent implements OnInit, OnDestroy {
+
+  @Output()
+  newQuery = new EventEmitter<string>();
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
+```
+
+```typescript
+@Component({
+  selector: 'app-projected-search-input',
+  templateUrl: './projected-search-input.component.html',
+  styleUrls: ['./projected-search-input.component.scss']
+})
+export class ProjectedSearchInputComponent implements OnInit, OnDestroy {
+
+  @Output()
+  newQuery = new EventEmitter<string>();
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  @HostListener('input', ['$event'])
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-projected-search-input',
+  templateUrl: './projected-search-input.component.html',
+  styleUrls: ['./projected-search-input.component.scss']
+})
+export class ProjectedSearchInputComponent implements OnInit, OnDestroy {
+
+  @Output()
+  newQuery = new EventEmitter<string>();
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  @HostListener('input', ['$event'])
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
+```
+
+```html
+<div class="container search-input">
+  <div class="input-group mb-3 input__container">
+    <div class="input-group-prepend">
+      <span
+        class="input-group-text"
+        id="basic-addon1"><img
+          src="assets/search-icon.svg"
+          alt="Search icon"></span>
+    </div>
+    <ng-content></ng-content>
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-projected-search-input',
+  templateUrl: './projected-search-input.component.html',
+  styleUrls: ['./projected-search-input.component.scss']
+})
+export class ProjectedSearchInputComponent implements OnInit, OnDestroy {
+
+  @Output()
+  newQuery = new EventEmitter<string>();
+
+  @ContentChild('myInputRef')
+  inputRef: ElementRef<HTMLInputElement>;
+
+  private debouncer$ = new Subject<string>();
+  private debouncerSubscription: Subscription;
+
+  ngOnInit(): void {
+    this.debouncerSubscription = this.debouncer$.pipe(
+      debounceTime(300)
+    ).subscribe(newQuery => this.newQuery.emit(newQuery));
+  }
+
+  @HostListener('input', ['$event'])
+  onNewQuery(e: InputEvent): void {
+    this.debouncer$.next((e.target as HTMLInputElement).value);
+  }
+
+  ngOnDestroy(): void {
+    this.debouncerSubscription.unsubscribe();
+  }
+
+}
+```
+
+```html subtitle="app.component.html"
+<div class="container main-content">
+  <div class="h1 main__title">
+    <h1>User Information</h1>
+  </div>
+
+  <app-projected-search-input (newQuery)="onNewQuery($event)">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Búsqueda"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </app-projected-search-input>
+
+</div>
+```
+
+</Step>
+
+<Step>
+
+```diff 11[18:28]
+```
+
+```html
+<div class="container main-content">
+  <div class="h1 main__title">
+    <h1>User Information</h1>
+  </div>
+
+  <app-projected-search-input (newQuery)="onNewQuery($event)">
+    <input
+      #myInputRef
+      type="text"
+      class="form-control"
+      placeholder="Búsqueda"
+      aria-label="Búsqueda"
+      aria-describedby="basic-addon1">
+  </app-projected-search-input>
+
+</div>
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+## Segundo ejemplo
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript title="Fila de tabla" subtitle="user-row-info.component.ts"
+@Component({
+  selector: 'app-user-row-info',
+  templateUrl: './user-row-info.component.html',
+  styleUrls: ['./user-row-info.component.scss']
+})
+export class UserRowInfoComponent {
+
+  @Input()
+  data: {
+    id: string;
+    name: string;
+    email: string;
+  };
+
+  @Output()
+  switchChange = new EventEmitter<void>();
+
+}
+```
+
+```html subtitle="user-row-info.component.html"
+<div class="row-container">
+  <div scope="row">{{ data.id }}</div>
+  <div>{{ data.name }}</div>
+  <div>{{ data.email }}</div>
+  <div class="actions">
+    <div class="custom-control custom-switch">
+      <input
+        type="checkbox"
+        class="custom-control-input">
+      <label
+        class="custom-control-label"
+        (click)="switchChange.emit()"></label>
+    </div>
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```diff 10:12
+```
+
+```diff 2[23:30],3[11:20],4[11:21]
+```
+
+</Step>
+
+<Step>
+
+```diff 15:16
+```
+
+```diff 12[9:37]
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-user-row-info',
+  templateUrl: './user-row-info.component.html',
+  styleUrls: ['./user-row-info.component.scss']
+})
+export class UserRowInfoComponent {
+
+  @Input()
+  data: {
+    id: string;
+    name: string;
+    email: string;
+  };
+
+  @Output()
+  switchChange = new EventEmitter<void>();
+
+  @Input()
+  withActionButton: boolean = false;
+
+  @Output()
+  btnAction = new EventEmitter<void>();
+
+}
+```
+
+```html
+<div class="row-container">
+  <div scope="row">{{ data.id }}</div>
+  <div>{{ data.name }}</div>
+  <div>{{ data.email }}</div>
+  <div class="actions">
+    <div class="custom-control custom-switch">
+      <input
+        type="checkbox"
+        class="custom-control-input">
+      <label
+        class="custom-control-label"
+        (click)="switchChange.emit()"></label>
+    </div>
+
+    <button
+      *ngIf="withActionButton"
+      type="button"
+      class="btn btn-info"
+      (click)="btnAction.emit()">
+      Ver
+    </button>
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-user-row-info',
+  templateUrl: './user-row-info.component.html',
+  styleUrls: ['./user-row-info.component.scss']
+})
+export class UserRowInfoComponent {
+
+  @Input()
+  data: {
+    id: string;
+    name: string;
+    email: string;
+  };
+
+  @Input()
+  hideSwitch: boolean = false;
+
+  @Output()
+  switchChange = new EventEmitter<void>();
+
+  @Input()
+  actions: Array<{
+    label: string;
+  }> = [];
+}
+```
+
+```html
+<div class="row-container">
+  <div scope="row">{{ data.id }}</div>
+  <div>{{ data.name }}</div>
+  <div>{{ data.email }}</div>
+  <div class="actions">
+    <div
+      class="custom-control custom-switch"
+      *ngIf="!hideSwitch">
+      <input
+        type="checkbox"
+        class="custom-control-input">
+      <label
+        class="custom-control-label"
+        (click)="switchChange.emit()"></label>
+    </div>
+
+    <button
+      *ngFor="let action of actions; let i = index"
+      type="button"
+      class="btn btn-info">
+      {{ action.label }}
+    </button>
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```diff 16
+```
+
+```diff 8[7:26]
+```
+
+</Step>
+
+<Step>
+
+```diff 21:24
+```
+
+```diff 18
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-user-row-info',
+  templateUrl: './user-row-info.component.html',
+  styleUrls: ['./user-row-info.component.scss']
+})
+export class UserRowInfoComponent {
+
+  @Input()
+  data: {
+    id: string;
+    name: string;
+    email: string;
+  };
+
+  @Input()
+  hideSwitch: boolean = false;
+
+  @Output()
+  switchChange = new EventEmitter<void>();
+
+  @Input()
+  actions: Array<{
+    label: string;
+  }> = [];
+
+  @Output()
+  actionClick = new EventEmitter<number>();
+}
+```
+
+```html
+<div class="row-container">
+  <div scope="row">{{ data.id }}</div>
+  <div>{{ data.name }}</div>
+  <div>{{ data.email }}</div>
+  <div class="actions">
+    <div
+      class="custom-control custom-switch"
+      *ngIf="!hideSwitch">
+      <input
+        type="checkbox"
+        class="custom-control-input">
+      <label
+        class="custom-control-label"
+        (click)="switchChange.emit()"></label>
+    </div>
+
+    <button
+      *ngFor="let action of actions; let i = index"
+      (click)="actionClick.emit(i)"
+      type="button"
+      class="btn btn-info">
+      {{ action.label }}
+    </button>
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-user-row-info',
+  templateUrl: './user-row-info.component.html',
+  styleUrls: ['./user-row-info.component.scss']
+})
+export class UserRowInfoComponent {
+
+  @Input()
+  data: {
+    id: string;
+    name: string;
+    email: string;
+  };
+
+  @Input()
+  actionsWithType: Array<{
+    label: string;
+    type: 'button' | 'toggle';
+  }> = [];
+
+  @Output()
+  actionClick = new EventEmitter<number>();
+}
+```
+
+```html
+<div class="row-container">
+  <div scope="row">{{ data.id }}</div>
+  <div>{{ data.name }}</div>
+  <div>{{ data.email }}</div>
+  <div class="actions">
+    <ng-container *ngFor="let action of actionsWithType; let i = index">
+      <ng-container [ngSwitch]="action.type">
+        <div
+          class="custom-control custom-switch"
+          *ngSwitchCase="'toggle'">
+          <input
+            type="checkbox"
+            class="custom-control-input">
+          <label
+            (click)="actionClick.emit(i)"
+            class="custom-control-label"></label>
+        </div>
+
+        <button
+          *ngSwitchCase="'button'"
+          (click)="actionClick.emit(i)"
+          type="button"
+          class="btn btn-info">
+          {{ action.label }}
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```diff 15:19
+```
+
+```diff 7[21:45],10[11:35],20[11:35]
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript subtitle="list-example.component.ts"
+@Component({
+  selector: 'app-list-example',
+  templateUrl: './list-example.component.html',
+  styleUrls: ['./list-example.component.scss']
+})
+export class ListExampleComponent {
+  users = [...];
+
+  customTypedActions = [
+    {
+      label: 'No',
+      type: 'button'
+    },
+    {
+      label: '',
+      type: 'toggle'
+    },
+    {
+      label: 'Mames',
+      type: 'button'
+    }
+  ];
+
+  onActionClick(index: number): void {
+    console.log('Click on action with index: ' + index);
+  }
+}
+```
+
+```html subtitle="list-example.component.html"
+<app-user-row-info
+  *ngFor="let item of users"
+  (actionClick)="onActionClick($event)"
+  [data]="item"
+  [actionsWithType]="customTypedActions"></app-user-row-info>
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-user-row-info',
+  templateUrl: './user-row-info.component.html',
+  styleUrls: ['./user-row-info.component.scss']
+})
+export class UserRowInfoComponent {
+
+  @Input()
+  data: {
+    id: string;
+    name: string;
+    email: string;
+  };
+
+  @Input()
+  actionsWithType: Array<{
+    label: string;
+    type: 'button' | 'toggle';
+  }> = [];
+
+  @Output()
+  actionClick = new EventEmitter<number>();
+}
+```
+
+```html
+<div class="row-container">
+  <div scope="row">{{ data.id }}</div>
+  <div>{{ data.name }}</div>
+  <div>{{ data.email }}</div>
+  <div class="actions">
+    <ng-container *ngFor="let action of actionsWithType; let i = index">
+      <ng-container [ngSwitch]="action.type">
+        <div
+          class="custom-control custom-switch"
+          *ngSwitchCase="'toggle'">
+          <input
+            type="checkbox"
+            class="custom-control-input">
+          <label
+            (click)="actionClick.emit(i)"
+            class="custom-control-label"></label>
+        </div>
+
+        <button
+          *ngSwitchCase="'button'"
+          (click)="actionClick.emit(i)"
+          type="button"
+          class="btn btn-info">
+          {{ action.label }}
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-user-row-info',
+  templateUrl: './user-row-info.component.html',
+  styleUrls: ['./user-row-info.component.scss']
+})
+export class UserRowInfoComponent {
+
+  @Input()
+  data: {
+    id: string;
+    name: string;
+    email: string;
+  };
+
+}
+```
+
+```html
+<div class="row-container">
+  <div scope="row">{{ data.id }}</div>
+  <div>{{ data.name }}</div>
+  <div>{{ data.email }}</div>
+  <div class="actions">
+    <ng-content></ng-content>
+  </div>
+</div>
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript subtitle="list-example.component.ts"
+@Component({
+  selector: 'app-list-example',
+  templateUrl: './list-example.component.html',
+  styleUrls: ['./list-example.component.scss']
+})
+export class ListExampleComponent {
+  users = [...];
+
+  customTypedActions = [
+    {
+      label: 'No',
+      type: 'button'
+    },
+    {
+      label: '',
+      type: 'toggle'
+    },
+    {
+      label: 'Mames',
+      type: 'button'
+    }
+  ];
+
+  onActionClick(index: number): void {
+    console.log('Click on action with index: ' + index);
+  }
+}
+```
+
+```html subtitle="list-example.component.html"
+<app-user-row-info
+  *ngFor="let item of users"
+  (actionClick)="onActionClick($event)"
+  [data]="item"
+  [actionsWithType]="customTypedActions"></app-user-row-info>
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-list-example',
+  templateUrl: './list-example.component.html',
+  styleUrls: ['./list-example.component.scss']
+})
+export class ListExampleComponent {
+
+  users = [...];
+
+  onDetailButton(userId: number): void {
+    console.log('Redirect to detail page');
+  }
+
+  onDeleteButton(userId: number): void {
+    console.log('Delete user');
+  }
+
+}
+```
+
+```html
+<app-projected-user-row-info
+  *ngFor="let item of users"
+  [data]="item">
+  <button
+    type="button"
+    class="btn btn-info"
+    (click)="onDetailButton(item.id)">
+    Ver
+  </button>
+  <button
+    type="button"
+    class="btn btn-info"
+    (click)="onDeleteButton(item.id)">
+    Eliminar
+  </button>
+</app-projected-user-row-info>
+```
+
+</Step>
+
+<Step>
+
+```typescript
+@Component({
+  selector: 'app-list-example',
+  templateUrl: './list-example.component.html',
+  styleUrls: ['./list-example.component.scss']
+})
+export class ListExampleComponent {
+
+  users = [...];
+
+  onDetailButton(userId: number): void {
+    console.log('Redirect to detail page');
+  }
+
+  onDeleteButton(userId: number): void {
+    console.log('Delete user');
+  }
+
+  onUserToggle(userId: number): void {
+    console.log('Toggle user state');
+  }
+
+}
+```
+
+```
+<app-projected-user-row-info
+  *ngFor="let item of users"
+  [data]="item">
+  <div class="custom-control custom-switch">
+    <input
+      type="checkbox"
+      class="custom-control-input">
+    <label
+      (click)="onUserToggle(item.id)"
+      class="custom-control-label"></label>
+  </div>
+</app-projected-user-row-info>
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+Repo:  
+[https://github.com/ESpittingCode/contentprojection](https://github.com/ESpittingCode/contentprojection)
