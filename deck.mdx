@@ -6,21 +6,53 @@ import {
 import { github, vsDark } from "@code-surfer/themes";
 
 import wutImage from './assets/what.gif';
+import frontEnds from './assets/avr.png';
+import init from './assets/init.png';
+import end1 from './assets/end1.png';
+import end2 from './assets/end2.png';
+import Card from './Card/Card';
+import FancyPage from './FancyPage/FancyPage';
+import FormContainer from './FormContainer/FormContainer';
 
 export const theme = vsDark;
 
-# ESpitting Code 👋
+# Tech Talk 👋
 
-Proyección de contenido con Angular
-
----
-
-## Proyección de contenido 
-### ¿Qué significa?
+Component Design Tricks
 
 ---
 
-<img src={wutImage} />
+<img src={init} style={{ height: '100%' }} />
+
+---
+
+## Content
+
+<div style={{ textAlign: 'left', display: 'flex', alignItems: 'center' }}>
+  <div>
+    <ol>
+      <li>Content projection. (React children prop)</li>
+      <li>Container presenter pattern</li>
+      <li>Lifting state up</li>
+      <li>Wrappers</li>
+      <li>What about testing?</li>
+    </ol>
+  </div>
+  <img src={frontEnds} style={{ width: '600px' }} />
+</div>
+
+---
+
+# Content projection
+
+---
+
+### Card Component
+
+<Card>
+  <button>Like</button>
+  <button>Save</button>
+</Card>
 
 ---
 
@@ -28,220 +60,51 @@ Proyección de contenido con Angular
 
 <Step>
 
-```typescript title="Input de filtrado" subtitle="search-input.component.ts"
+```typescript title="Angular" subtitle="card.component.ts"
 @Component({
-  selector: 'app-search-input'
+  selector: 'card'
+  template: `
+  <div className="card">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <button>Like</button>
+    <button>Save</button>
+  </div>
+  `
 })
-export class SearchInputComponent implements OnInit, OnDestroy {
+export class Card implements OnInit {
 
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
+  @Input() title: string;
+  @Input() description: string;
 
 }
 ```
 
-```html subtitle="search-input.component.html"
-<div class="container search-input">
-  <div class="input-group mb-3 input__container">
-    <div class="input-group-prepend">
-      <span
-        class="input-group-text"
-        id="basic-addon1"><img
-          src="assets/search-icon.svg"
-          alt="Search icon"></span>
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ title, description }) => {
+  return (
+    <div className="card">
+      <h1>{ title }</h1>
+      <p>{ description }</p>
+      <button>Like</button>
+      <button>Save</button>
     </div>
-    <input
-      (input)="onNewQuery($event)"
-      type="text"
-      class="form-control"
-      placeholder="Búsqueda"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </div>
-</div>
+  );
+};
+
+export default Card;
 ```
 
 </Step>
 
 <Step>
 
-```diff
-
+```diff 5:6,13:15
 ```
 
-```diff 10:16
-
-```
-
-</Step>
-
-<Step>
-
-```diff 15:17
-
-```
-
-```diff 11
-
-```
-
-</Step>
-
-<Step>
-
-```diff
-
-```
-
-```diff
-
-```
-
-</Step>
-
-<Step>
-
-```typescript
-@Component({
-  selector: 'app-search-input'
-})
-export class SearchInputComponent implements OnInit, OnDestroy {
-
-  @Input()
-  placeholder: string = 'Default';
-
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
-
-}
-```
-
-```html
-<div class="container search-input">
-  <div class="input-group mb-3 input__container">
-    <div class="input-group-prepend">
-      <span
-        class="input-group-text"
-        id="basic-addon1"><img
-          src="assets/search-icon.svg"
-          alt="Search icon"></span>
-    </div>
-    <input
-      (input)="onNewQuery($event)"
-      type="text"
-      class="form-control"
-      [placeholder]="placeholder"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </div>
-</div>
-```
-
-</Step>
-
-<Step>
-
-```typescript
-@Component({
-  selector: 'app-search-input'
-})
-export class SearchInputComponent implements OnInit, OnDestroy {
-
-  @Input()
-  placeholder: string = 'Default';
-
-  @Input()
-  type: string = 'text';
-
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
-
-}
-```
-
-```html
-<div class="container search-input">
-  <div class="input-group mb-3 input__container">
-    <div class="input-group-prepend">
-      <span
-        class="input-group-text"
-        id="basic-addon1"><img
-          src="assets/search-icon.svg"
-          alt="Search icon"></span>
-    </div>
-    <input
-      (input)="onNewQuery($event)"
-      [type]="type"
-      class="form-control"
-      [placeholder]="placeholder"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </div>
-</div>
-```
-
-</Step>
-
-<Step>
-
-```diff 9:10
-```
-
-```diff 15
-
-```
-
-</Step>
-
-<Step>
-
-```diff
-```
-
-```diff
-
+```diff 3[17:34],6:7
 ```
 
 </Step>
@@ -250,26 +113,13 @@ export class SearchInputComponent implements OnInit, OnDestroy {
 
 ---
 
-<CodeSurfer>
+### Card Component
 
-```html subtitle="app.component.html"
-<div class="container main-content">
-  <div class="h1 main__title">
-    <h1>User Information</h1>
-  </div>
-
-  <app-search-input
-    placeholder="Custom"
-    (newQuery)="onNewQuery($event)"></app-search-input>
-
-</div>
-
-```
-
-```diff 6:8
-```
-
-</CodeSurfer>
+<Card>
+  <button>Like</button>
+  <button>Save</button>
+  <button style={{ background: 'red' }}>Delete</button>
+</Card>
 
 ---
 
@@ -277,878 +127,205 @@ export class SearchInputComponent implements OnInit, OnDestroy {
 
 <Step>
 
-```typescript
+```typescript title="Angular" subtitle="card.component.ts"
 @Component({
-  selector: 'app-search-input'
+  selector: 'card'
+  template: `
+  <div className="card">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <button>Like</button>
+    <button>Save</button>
+  </div>
+  `
 })
-export class SearchInputComponent implements OnInit, OnDestroy {
+export class Card implements OnInit {
 
-  @Input()
-  placeholder: string = 'Default';
-
-  @Input()
-  type: string = 'text';
-
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
+  @Input() title: string;
+  @Input() description: string;
 
 }
 ```
 
-```html
-<div class="container search-input">
-  <div class="input-group mb-3 input__container">
-    <div class="input-group-prepend">
-      <span
-        class="input-group-text"
-        id="basic-addon1"><img
-          src="assets/search-icon.svg"
-          alt="Search icon"></span>
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ 
+  title, 
+  description 
+}) => {
+  return (
+    <div className="card">
+      <h1>{ title }</h1>
+      <p>{ description }</p>
+      <button>Like</button>
+      <button>Save</button>
     </div>
-    <input
-      (input)="onNewQuery($event)"
-      [type]="type"
-      class="form-control"
-      [placeholder]="placeholder"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </div>
-</div>
+  );
+};
+
+export default Card;
 ```
 
 </Step>
 
 <Step>
 
-```typescript
+```typescript title="Angular" subtitle="card.component.ts"
 @Component({
-  selector: 'app-search-input'
+  selector: 'card'
+  template: `
+  <div className="card">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <button>Like</button>
+    <button>Save</button>
+    <button *ngIf="hasDeleteButton" class="red-bg">Delete</button>
+  </div>
+  `
 })
-export class SearchInputComponent implements OnInit, OnDestroy {
+export class Card implements OnInit {
 
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
+  @Input() title: string;
+  @Input() description: string;
+  @Input() hasDeleteButton: boolean;
 
 }
 ```
 
-```html
-<div class="container search-input">
-  <div class="input-group mb-3 input__container">
-    <div class="input-group-prepend">
-      <span
-        class="input-group-text"
-        id="basic-addon1"><img
-          src="assets/search-icon.svg"
-          alt="Search icon"></span>
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ 
+  title, 
+  description, 
+  hasDeleteButton 
+}) => {
+  return (
+    <div className="card">
+      <h1>{ title }</h1>
+      <p>{ description }</p>
+      <button>Like</button>
+      <button>Save</button>
+      {hasDeleteButton && <button class="red-bg">Delete</button>}
     </div>
-    <ng-content></ng-content>
-  </div>
-</div>
+  );
+};
+
+export default Card;
 ```
 
 </Step>
 
-</CodeSurferColumns>
+<Step>
 
----
-
-<CodeSurfer>
-
-```html subtitle="app.component.html"
-<div class="container main-content">
-  <div class="h1 main__title">
-    <h1>User Information</h1>
-  </div>
-
-  <app-search-input
-    placeholder="Custom"
-    (newQuery)="onNewQuery($event)"></app-search-input>
-
-</div>
-
-```
-
-```html subtitle="app.component.html"
-<div class="container main-content">
-  <div class="h1 main__title">
-    <h1>User Information</h1>
-  </div>
-
-  <app-projected-search-input (newQuery)="onNewQuery($event)">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Búsqueda"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </app-projected-search-input>
-
-</div>
-```
-
-```diff 7:12
-```
-
-```diff 8[7:11],10[7:18]
-```
-
-```diff 6[31:62]
-```
-
-</CodeSurfer>
-
----
-
-<CodeSurfer>
-
-```typescript
+```typescript title="Angular" subtitle="card.component.ts"
 @Component({
-  selector: 'app-search-input'
+  selector: 'card'
+  template: `
+  <div className="card">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <button 
+      *ngFor="let button of actions" 
+      [ngStyle]="button.style">{{ button.label }}</button>
+  </div>
+  `
 })
-export class SearchInputComponent implements OnInit, OnDestroy {
+export class Card implements OnInit {
 
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
+  @Input() title: string;
+  @Input() description: string;
+  @Input() actions: Array<{
+    label: string,
+    style: any
+  }>;
 
 }
 ```
 
-```diff 15:17
-```
-
-```diff 15[17:27]
-```
-
-</CodeSurfer>
-
----
-
-<CodeSurfer>
-
-```html
-<input
-  (input)="onNewQuery($event)"
-  [type]="type"
-  class="form-control"
-  [placeholder]="placeholder"
-  aria-label="Búsqueda"
-  aria-describedby="basic-addon1">
-```
-
-```diff 2
-```
-
-```html
-<div class="container search-input">
-  <div class="input-group mb-3 input__container">
-    <div class="input-group-prepend">
-      <span
-        class="input-group-text"
-        id="basic-addon1"><img
-          src="assets/search-icon.svg"
-          alt="Search icon"></span>
-    </div>
-    <input
-      (input)="onNewQuery($event)"
-      [type]="type"
-      class="form-control"
-      [placeholder]="placeholder"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </div>
-</div>
-```
-
-```html
-<div class="container search-input">
-  <div 
-    (input)="onNewQuery($event)" 
-    class="input-group mb-3 input__container">
-    <div class="input-group-prepend">
-      <span
-        class="input-group-text"
-        id="basic-addon1"><img
-          src="assets/search-icon.svg"
-          alt="Search icon"></span>
-    </div>
-    <input
-      [type]="type"
-      class="form-control"
-      [placeholder]="placeholder"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </div>
-</div>
-```
-
-```diff 2[4:7]
-```
-
-```html
-<div 
-  (input)="onNewQuery($event)" 
-  class="container search-input">
-  <div class="input-group mb-3 input__container">
-    <div class="input-group-prepend">
-      <span
-        class="input-group-text"
-        id="basic-addon1"><img
-          src="assets/search-icon.svg"
-          alt="Search icon"></span>
-    </div>
-    <input
-      [type]="type"
-      class="form-control"
-      [placeholder]="placeholder"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </div>
-</div>
-```
-
-```diff 1[2:5]
-```
-
-</CodeSurfer>
-
----
-
-<CodeSurfer>
-
-```typescript
-@Component({
-  selector: 'app-projected-search-input',
-  templateUrl: './projected-search-input.component.html',
-  styleUrls: ['./projected-search-input.component.scss']
-})
-export class ProjectedSearchInputComponent implements OnInit, OnDestroy {
-
-  @Output()
-  newQuery = new EventEmitter<string>();
-
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
-
-}
-```
-
-```typescript
-@Component({
-  selector: 'app-projected-search-input',
-  templateUrl: './projected-search-input.component.html',
-  styleUrls: ['./projected-search-input.component.scss']
-})
-export class ProjectedSearchInputComponent implements OnInit, OnDestroy {
-
-  @Output()
-  newQuery = new EventEmitter<string>();
-
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  @HostListener('input', ['$event'])
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
-
-}
-```
-
-</CodeSurfer>
-
----
-
-<CodeSurferColumns>
-
-<Step>
-
-```typescript
-@Component({
-  selector: 'app-projected-search-input',
-  templateUrl: './projected-search-input.component.html',
-  styleUrls: ['./projected-search-input.component.scss']
-})
-export class ProjectedSearchInputComponent implements OnInit, OnDestroy {
-
-  @Output()
-  newQuery = new EventEmitter<string>();
-
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  @HostListener('input', ['$event'])
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
-
-}
-```
-
-```html
-<div class="container search-input">
-  <div class="input-group mb-3 input__container">
-    <div class="input-group-prepend">
-      <span
-        class="input-group-text"
-        id="basic-addon1"><img
-          src="assets/search-icon.svg"
-          alt="Search icon"></span>
-    </div>
-    <ng-content></ng-content>
-  </div>
-</div>
-```
-
-</Step>
-
-<Step>
-
-```typescript
-@Component({
-  selector: 'app-projected-search-input',
-  templateUrl: './projected-search-input.component.html',
-  styleUrls: ['./projected-search-input.component.scss']
-})
-export class ProjectedSearchInputComponent implements OnInit, OnDestroy {
-
-  @Output()
-  newQuery = new EventEmitter<string>();
-
-  @ContentChild('myInputRef')
-  inputRef: ElementRef<HTMLInputElement>;
-
-  private debouncer$ = new Subject<string>();
-  private debouncerSubscription: Subscription;
-
-  ngOnInit(): void {
-    this.debouncerSubscription = this.debouncer$.pipe(
-      debounceTime(300)
-    ).subscribe(newQuery => this.newQuery.emit(newQuery));
-  }
-
-  @HostListener('input', ['$event'])
-  onNewQuery(e: InputEvent): void {
-    this.debouncer$.next((e.target as HTMLInputElement).value);
-  }
-
-  ngOnDestroy(): void {
-    this.debouncerSubscription.unsubscribe();
-  }
-
-}
-```
-
-```html subtitle="app.component.html"
-<div class="container main-content">
-  <div class="h1 main__title">
-    <h1>User Information</h1>
-  </div>
-
-  <app-projected-search-input (newQuery)="onNewQuery($event)">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Búsqueda"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </app-projected-search-input>
-
-</div>
-```
-
-</Step>
-
-<Step>
-
-```diff 11[18:28]
-```
-
-```html
-<div class="container main-content">
-  <div class="h1 main__title">
-    <h1>User Information</h1>
-  </div>
-
-  <app-projected-search-input (newQuery)="onNewQuery($event)">
-    <input
-      #myInputRef
-      type="text"
-      class="form-control"
-      placeholder="Búsqueda"
-      aria-label="Búsqueda"
-      aria-describedby="basic-addon1">
-  </app-projected-search-input>
-
-</div>
-```
-
-</Step>
-
-</CodeSurferColumns>
-
----
-
-## Segundo ejemplo
-
----
-
-<CodeSurferColumns>
-
-<Step>
-
-```typescript title="Fila de tabla" subtitle="user-row-info.component.ts"
-@Component({
-  selector: 'app-user-row-info',
-  templateUrl: './user-row-info.component.html',
-  styleUrls: ['./user-row-info.component.scss']
-})
-export class UserRowInfoComponent {
-
-  @Input()
-  data: {
-    id: string;
-    name: string;
-    email: string;
-  };
-
-  @Output()
-  switchChange = new EventEmitter<void>();
-
-}
-```
-
-```html subtitle="user-row-info.component.html"
-<div class="row-container">
-  <div scope="row">{{ data.id }}</div>
-  <div>{{ data.name }}</div>
-  <div>{{ data.email }}</div>
-  <div class="actions">
-    <div class="custom-control custom-switch">
-      <input
-        type="checkbox"
-        class="custom-control-input">
-      <label
-        class="custom-control-label"
-        (click)="switchChange.emit()"></label>
-    </div>
-  </div>
-</div>
-```
-
-</Step>
-
-<Step>
-
-```diff 10:12
-```
-
-```diff 2[23:30],3[11:20],4[11:21]
-```
-
-</Step>
-
-<Step>
-
-```diff 15:16
-```
-
-```diff 12[9:37]
-```
-
-</Step>
-
-<Step>
-
-```typescript
-@Component({
-  selector: 'app-user-row-info',
-  templateUrl: './user-row-info.component.html',
-  styleUrls: ['./user-row-info.component.scss']
-})
-export class UserRowInfoComponent {
-
-  @Input()
-  data: {
-    id: string;
-    name: string;
-    email: string;
-  };
-
-  @Output()
-  switchChange = new EventEmitter<void>();
-
-  @Input()
-  withActionButton: boolean = false;
-
-  @Output()
-  btnAction = new EventEmitter<void>();
-
-}
-```
-
-```html
-<div class="row-container">
-  <div scope="row">{{ data.id }}</div>
-  <div>{{ data.name }}</div>
-  <div>{{ data.email }}</div>
-  <div class="actions">
-    <div class="custom-control custom-switch">
-      <input
-        type="checkbox"
-        class="custom-control-input">
-      <label
-        class="custom-control-label"
-        (click)="switchChange.emit()"></label>
-    </div>
-
-    <button
-      *ngIf="withActionButton"
-      type="button"
-      class="btn btn-info"
-      (click)="btnAction.emit()">
-      Ver
-    </button>
-  </div>
-</div>
-```
-
-</Step>
-
-<Step>
-
-```typescript
-@Component({
-  selector: 'app-user-row-info',
-  templateUrl: './user-row-info.component.html',
-  styleUrls: ['./user-row-info.component.scss']
-})
-export class UserRowInfoComponent {
-
-  @Input()
-  data: {
-    id: string;
-    name: string;
-    email: string;
-  };
-
-  @Input()
-  hideSwitch: boolean = false;
-
-  @Output()
-  switchChange = new EventEmitter<void>();
-
-  @Input()
-  actions: Array<{
-    label: string;
-  }> = [];
-}
-```
-
-```html
-<div class="row-container">
-  <div scope="row">{{ data.id }}</div>
-  <div>{{ data.name }}</div>
-  <div>{{ data.email }}</div>
-  <div class="actions">
-    <div
-      class="custom-control custom-switch"
-      *ngIf="!hideSwitch">
-      <input
-        type="checkbox"
-        class="custom-control-input">
-      <label
-        class="custom-control-label"
-        (click)="switchChange.emit()"></label>
-    </div>
-
-    <button
-      *ngFor="let action of actions; let i = index"
-      type="button"
-      class="btn btn-info">
-      {{ action.label }}
-    </button>
-  </div>
-</div>
-```
-
-</Step>
-
-<Step>
-
-```diff 16
-```
-
-```diff 8[7:26]
-```
-
-</Step>
-
-<Step>
-
-```diff 21:24
-```
-
-```diff 18
-```
-
-</Step>
-
-<Step>
-
-```typescript
-@Component({
-  selector: 'app-user-row-info',
-  templateUrl: './user-row-info.component.html',
-  styleUrls: ['./user-row-info.component.scss']
-})
-export class UserRowInfoComponent {
-
-  @Input()
-  data: {
-    id: string;
-    name: string;
-    email: string;
-  };
-
-  @Input()
-  hideSwitch: boolean = false;
-
-  @Output()
-  switchChange = new EventEmitter<void>();
-
-  @Input()
-  actions: Array<{
-    label: string;
-  }> = [];
-
-  @Output()
-  actionClick = new EventEmitter<number>();
-}
-```
-
-```html
-<div class="row-container">
-  <div scope="row">{{ data.id }}</div>
-  <div>{{ data.name }}</div>
-  <div>{{ data.email }}</div>
-  <div class="actions">
-    <div
-      class="custom-control custom-switch"
-      *ngIf="!hideSwitch">
-      <input
-        type="checkbox"
-        class="custom-control-input">
-      <label
-        class="custom-control-label"
-        (click)="switchChange.emit()"></label>
-    </div>
-
-    <button
-      *ngFor="let action of actions; let i = index"
-      (click)="actionClick.emit(i)"
-      type="button"
-      class="btn btn-info">
-      {{ action.label }}
-    </button>
-  </div>
-</div>
-```
-
-</Step>
-
-<Step>
-
-```typescript
-@Component({
-  selector: 'app-user-row-info',
-  templateUrl: './user-row-info.component.html',
-  styleUrls: ['./user-row-info.component.scss']
-})
-export class UserRowInfoComponent {
-
-  @Input()
-  data: {
-    id: string;
-    name: string;
-    email: string;
-  };
-
-  @Input()
-  actionsWithType: Array<{
-    label: string;
-    type: 'button' | 'toggle';
-  }> = [];
-
-  @Output()
-  actionClick = new EventEmitter<number>();
-}
-```
-
-```html
-<div class="row-container">
-  <div scope="row">{{ data.id }}</div>
-  <div>{{ data.name }}</div>
-  <div>{{ data.email }}</div>
-  <div class="actions">
-    <ng-container *ngFor="let action of actionsWithType; let i = index">
-      <ng-container [ngSwitch]="action.type">
-        <div
-          class="custom-control custom-switch"
-          *ngSwitchCase="'toggle'">
-          <input
-            type="checkbox"
-            class="custom-control-input">
-          <label
-            (click)="actionClick.emit(i)"
-            class="custom-control-label"></label>
-        </div>
-
-        <button
-          *ngSwitchCase="'button'"
-          (click)="actionClick.emit(i)"
-          type="button"
-          class="btn btn-info">
-          {{ action.label }}
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ 
+  title, 
+  description, 
+  actions
+}) => {
+  return (
+    <div className="card">
+      <h1>{ title }</h1>
+      <p>{ description }</p>
+      {actions.map(button => (
+        <button style={button.style}>
+          {button.label}
         </button>
-      </ng-container>
-    </ng-container>
-  </div>
-</div>
+      ))}
+    </div>
+  );
+};
+
+export default Card;
 ```
 
 </Step>
 
 <Step>
 
-```diff 15:19
-```
-
-```diff 7[21:45],10[11:35],20[11:35]
-```
-
-</Step>
-
-</CodeSurferColumns>
-
----
-
-<CodeSurferColumns>
-
-<Step>
-
-```typescript subtitle="list-example.component.ts"
+```typescript title="Angular" subtitle="card.component.ts"
 @Component({
-  selector: 'app-list-example',
-  templateUrl: './list-example.component.html',
-  styleUrls: ['./list-example.component.scss']
+  selector: 'card'
+  template: `
+  <div className="card">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <button 
+      *ngFor="let button of actions; let index = i" 
+      (click)="onButtonClick(i)"
+      [ngStyle]="button.style">{{ button.label }}</button>
+  </div>
+  `
 })
-export class ListExampleComponent {
-  users = [...];
+export class Card implements OnInit {
 
-  customTypedActions = [
-    {
-      label: 'No',
-      type: 'button'
-    },
-    {
-      label: '',
-      type: 'toggle'
-    },
-    {
-      label: 'Mames',
-      type: 'button'
-    }
-  ];
+  @Input() title: string;
+  @Input() description: string;
+  @Input() actions: Array<{
+    label: string,
+    style: any
+  }>;
 
-  onActionClick(index: number): void {
-    console.log('Click on action with index: ' + index);
+  @Output() buttonClicked = new EventEmitter<number>();
+
+  onButtonClick(index: number): void {
+    this.buttonClicked.emit(index);
   }
+
 }
 ```
 
-```html subtitle="list-example.component.html"
-<app-user-row-info
-  *ngFor="let item of users"
-  (actionClick)="onActionClick($event)"
-  [data]="item"
-  [actionsWithType]="customTypedActions"></app-user-row-info>
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ 
+  title, 
+  description, 
+  actions
+}) => {
+  return (
+    <div className="card">
+      <h1>{ title }</h1>
+      <p>{ description }</p>
+      {actions.map(button => (
+        <button style={button.style} onClick={button.handleClick}>
+          {button.label}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+export default Card;
 ```
 
 </Step>
@@ -1157,99 +334,1071 @@ export class ListExampleComponent {
 
 ---
 
+### Card Component
+
+<Card>
+  <button>Like</button>
+  <button>Save</button>
+  <button style={{ background: 'red' }}>Delete 👋</button>
+</Card>
+
+---
+
+### Card Component
+
+<Card title="Card title 👋">
+  <button>Like</button>
+  <button>Save</button>
+  <button style={{ background: 'red' }}>Delete 👋</button>
+</Card>
+
+---
+
 <CodeSurferColumns>
 
 <Step>
 
-```typescript
+```typescript title="Angular" subtitle="card.component.ts"
 @Component({
-  selector: 'app-user-row-info',
-  templateUrl: './user-row-info.component.html',
-  styleUrls: ['./user-row-info.component.scss']
+  selector: 'card'
+  template: `
+  <div className="card">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <button 
+      *ngFor="let button of actions; let index = i" 
+      (click)="onButtonClick(i)"
+      [ngStyle]="button.style">{{ button.label }}</button>
+  </div>
+  `
 })
-export class UserRowInfoComponent {
+export class Card implements OnInit {
 
-  @Input()
-  data: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  @Input() title: string;
+  @Input() description: string;
+  @Input() actions: Array<{
+    label: string,
+    style: any,
+  }>;
 
-  @Input()
-  actionsWithType: Array<{
-    label: string;
-    type: 'button' | 'toggle';
-  }> = [];
+  @Output() buttonClicked = new EventEmitter<number>();
 
-  @Output()
-  actionClick = new EventEmitter<number>();
+  onButtonClick(index: number): void {
+    this.buttonClicked.emit(index);
+  }
+
 }
 ```
 
-```html
-<div class="row-container">
-  <div scope="row">{{ data.id }}</div>
-  <div>{{ data.name }}</div>
-  <div>{{ data.email }}</div>
-  <div class="actions">
-    <ng-container *ngFor="let action of actionsWithType; let i = index">
-      <ng-container [ngSwitch]="action.type">
-        <div
-          class="custom-control custom-switch"
-          *ngSwitchCase="'toggle'">
-          <input
-            type="checkbox"
-            class="custom-control-input">
-          <label
-            (click)="actionClick.emit(i)"
-            class="custom-control-label"></label>
-        </div>
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
 
-        <button
-          *ngSwitchCase="'button'"
-          (click)="actionClick.emit(i)"
-          type="button"
-          class="btn btn-info">
-          {{ action.label }}
+const Card = ({ 
+  title, 
+  description, 
+  actions
+}) => {
+  return (
+    <div className="card">
+      <h1>{ title }</h1>
+      <p>{ description }</p>
+      {actions.map(button => (
+        <button style={button.style} onClick={button.handleClick}>
+          {button.label}
         </button>
-      </ng-container>
-    </ng-container>
-  </div>
-</div>
+      ))}
+    </div>
+  );
+};
+
+export default Card;
 ```
 
 </Step>
 
 <Step>
 
-```typescript
+```typescript title="Angular" subtitle="card.component.ts"
 @Component({
-  selector: 'app-user-row-info',
-  templateUrl: './user-row-info.component.html',
-  styleUrls: ['./user-row-info.component.scss']
-})
-export class UserRowInfoComponent {
-
-  @Input()
-  data: {
-    id: string;
-    name: string;
-    email: string;
-  };
-
-}
-```
-
-```html
-<div class="row-container">
-  <div scope="row">{{ data.id }}</div>
-  <div>{{ data.name }}</div>
-  <div>{{ data.email }}</div>
-  <div class="actions">
+  selector: 'card'
+  template: `
+  <div className="card">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
     <ng-content></ng-content>
   </div>
-</div>
+  `
+})
+export class Card implements OnInit {
+
+  @Input() title: string;
+  @Input() description: string;
+
+}
+```
+
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ 
+  title, 
+  description, 
+  children
+}) => {
+  return (
+    <div className="card">
+      <h1>{ title }</h1>
+      <p>{ description }</p>
+      {children}
+    </div>
+  );
+};
+
+export default Card;
+```
+
+</Step>
+
+<Step>
+
+```html title="Angular" subtitle="card-client.component.html"
+...
+<card title="Title" description="description">
+  <button>Like</button>
+  <button>Save</button>
+  <button style="background-color: red">Delete 👋</button>
+</card>
+...
+```
+
+```jsx title="React" subtitle="CardClient.js"
+...
+<Card title="title" description="Description">
+  <button>Like</button>
+  <button>Save</button>
+  <button style={{ backgroundColor: 'red' }}>Delete 👋</button>
+</Card>
+...
+```
+
+</Step>
+
+<Step>
+
+```html title="Angular" subtitle="card-client.component.html"
+...
+<card title="Title" description="description">
+  <button (click)="onLikeClick()">Like</button>
+  <button (click)="onSaveClick()">Save</button>
+  <button (click)="onDeleteClick()" style="background-color: red">
+    Delete 👋
+  </button>
+</card>
+...
+```
+
+```jsx title="React" subtitle="CardClient.js"
+...
+<Card title="title" description="Description">
+  <button onClick={handleLikeClick}>Like</button>
+  <button onClick={handleSaveClick}>Save</button>
+  <button onClick={handleDeleteClick} style={{ backgroundColor: 'red' }}>
+    Delete 👋
+  </button>
+</Card>
+...
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="card.component.ts"
+@Component({
+  selector: 'card'
+  template: `
+  <div className="card">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <button 
+      *ngFor="let button of actions; let index = i" 
+      (click)="onButtonClick(i)"
+      [ngStyle]="button.style">{{ button.label }}</button>
+  </div>
+  `
+})
+export class Card implements OnInit {
+
+  @Input() title: string;
+  @Input() description: string;
+  @Input() actions: Array<{
+    label: string,
+    style: any,
+  }>;
+
+  @Output() buttonClicked = new EventEmitter<number>();
+
+  onButtonClick(index: number): void {
+    this.buttonClicked.emit(index);
+  }
+
+}
+```
+
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ 
+  title, 
+  description, 
+  actions
+}) => {
+  return (
+    <div className="card">
+      <h1>{ title }</h1>
+      <p>{ description }</p>
+      {actions.map(button => (
+        <button style={button.style} onClick={button.handleClick}>
+          {button.label}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+export default Card;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="card.component.ts"
+@Component({
+  selector: 'card'
+  template: `
+  <div className="card">
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <ng-content></ng-content>
+  </div>
+  `
+})
+export class Card implements OnInit {
+
+  @Input() title: string;
+  @Input() description: string;
+
+}
+```
+
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ 
+  title, 
+  description, 
+  children
+}) => {
+  return (
+    <div className="card">
+      <h1>{ title }</h1>
+      <p>{ description }</p>
+      {children}
+    </div>
+  );
+};
+
+export default Card;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="card.component.ts"
+@Component({
+  selector: 'card'
+  template: `
+  <div className="card">
+    <ng-container *ngTemplateOutlet="title"></ng-container>
+    <p>{{ description }}</p>
+    <ng-content></ng-content>
+  </div>
+  `
+})
+export class Card implements OnInit {
+
+  @Input() title: TemplateRef;
+  @Input() description: string;
+
+}
+```
+
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ 
+  title, 
+  description, 
+  children
+}) => {
+  return (
+    <div className="card">
+      { title }
+      <p>{ description }</p>
+      {children}
+    </div>
+  );
+};
+
+export default Card;
+```
+
+</Step>
+
+<Step>
+
+```html title="Angular" subtitle="card-client.component.html"
+...
+<ng-template #title>
+  <h2>Card title 👋</h2>
+</ng-template>
+
+<card [title]="title" description="description">
+  <button>Like</button>
+  <button>Save</button>
+  <button style="background-color: red">
+    Delete 👋
+  </button>
+</card>
+...
+```
+
+```jsx title="React" subtitle="CardClient.js"
+...
+<Card title={<h2>Card title 👋</h2>} description="Description">
+  <button>Like</button>
+  <button>Save</button>
+  <button style={{ backgroundColor: 'red' }}>
+    Delete 👋
+  </button>
+</Card>
+...
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+# Container presenter pattern
+
+---
+
+### Form component
+
+<FormContainer />
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript title="Angular" subtitle="form-container.component.ts"
+@Component({
+  selector: 'form-container'
+  template: `
+  <div className="form-container">
+    <section>
+      This is a fancy form
+    </section>
+    <form className="form">
+      <label for="name">Name</label>
+      <input name="name" />
+
+      <label for="age">Age</label>
+      <input name="age" type="number" />
+
+      <button type="submit">Save data</button>
+    </form>
+  </div>
+  `
+})
+export class FormContainer implements OnInit {
+
+  formValidation(form: FormGroup): boolean {
+    // tons of validation lines
+  };
+
+  onFormSubmit(data): void {
+    // tons of request lines
+  };
+
+}
+```
+
+```jsx title="React" subtitle="FormContainer.js"
+import React from 'react';
+
+const FormContainer = () => {
+
+  const validationLogic = () => {
+    // tons of validation lines
+  };
+
+  const handleSubmit = () => {
+    // tons of request lines
+  };
+
+  return (
+    <div className="form-container">
+      <section>
+        This is a fancy form
+      </section>
+      <form className="form">
+        <label for="name">Name</label>
+        <input name="name" />
+
+        <label for="age">Age</label>
+        <input name="age" type="number" />
+
+        <button type="submit">Save data</button>
+      </form>
+    </div>
+  );
+};
+
+export default FormContainer;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="form-container.component.ts"
+@Component({
+  selector: 'form-container'
+  template: `
+  <div className="form-container">
+    <section-presenter></section-presenter>
+    <form-presenter (onFormSubmit)="onFormSubmit($event)">
+    </form-presenter>
+  </div>
+  `
+})
+export class FormContainer implements OnInit {
+
+  onFormSubmit(data): void {
+    // tons of request lines
+  };
+
+}
+```
+
+```jsx title="React" subtitle="FormContainer.js"
+import React from 'react';
+
+const FormContainer = () => {
+
+  const handleSubmit = () => {
+    // tons of request lines
+  };
+
+  return (
+    <div className="form-container">
+      <SectionPresenter />
+      <FormPresenter onFormSubmit={handleSubmit} />      
+    </div>
+  );
+};
+
+export default FormContainer;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="section-presenter.component.ts"
+@Component({
+  selector: 'section-presenter'
+  template: `
+  <section>
+    This is a fancy form
+  </section>
+`
+})
+export class SectionPresenter { }
+```
+
+```jsx title="React" subtitle="SectionPresenter.js"
+import React from 'react';
+
+const SectionPresenter  = () => {
+  return (
+    <section>
+      This is a fancy form
+    </section>
+  );
+};
+
+export default SectionPresenter;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="form-presenter.component.ts"
+@Component({
+  selector: 'form-presenter'
+  template: `
+  <form className="form" (onSubmit)="onSubmit($event)">
+    <label for="name">Name</label>
+    <input name="name" />
+
+    <label for="age">Age</label>
+    <input name="age" type="number" />
+
+    <button type="submit">Save data</button>
+  </form>
+`
+})
+export class FormPresenter {
+  @Output() onFormSubmit = new EventEmitter();
+
+  onSubmit(data): void {
+    this.onFormSubmit.emit(data);
+  }
+}
+```
+
+```jsx title="React" subtitle="FormPresenter.js"
+import React from 'react';
+
+const FormPresenter  = ({ handleSubmit }) => {
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <label for="name">Name</label>
+      <input name="name" />
+
+      <label for="age">Age</label>
+      <input name="age" type="number" />
+
+      <button type="submit">Save data</button>
+    </form>
+  );
+};
+
+export default FormPresenter;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="form-presenter.component.ts"
+@Component({
+  selector: 'form-presenter'
+  template: `
+  <form className="form" (onSubmit)="onSubmit($event)">
+    <label for="name">Name</label>
+    <input 
+      name="name" 
+      [ngClass]={'with-error': formErrors.name } />
+
+    <label for="age">Age</label>
+    <input name="age" type="number" />
+
+    <button type="submit">Save data</button>
+  </form>
+`
+})
+export class FormPresenter {
+  
+  @Input() formErrors: { [key: string]: string };
+  /* 
+  {
+    name: 'This name has already been saved'
+  } 
+  */
+
+  @Output() onFormSubmit = new EventEmitter();
+
+  onSubmit(data): void {
+    this.onFormSubmit.emit(data);
+  }
+}
+```
+
+```jsx title="React" subtitle="FormPresenter.js"
+import React from 'react';
+
+const FormPresenter  = ({ handleSubmit, formErrors }) => {
+
+  const nameHasError = formErrors.name ? true : false;
+
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <label for="name">Name</label>
+      <input 
+        name="name" 
+        className={nameHasError ? 'with-error' : ''} />
+
+      <label for="age">Age</label>
+      <input name="age" type="number" />
+
+      <button type="submit">Save data</button>
+    </form>
+  );
+};
+
+export default FormPresenter;
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+# Lifting the state up
+
+---
+
+### FormContainer component
+
+<FormContainer />
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript title="Angular" subtitle="form-container.component.ts"
+@Component({
+  selector: 'form-container'
+  template: `
+  <div className="form-container">
+    <section-presenter></section-presenter>
+    <form-presenter (onFormSubmit)="onFormSubmit($event)">
+    </form-presenter>
+  </div>
+  `
+})
+export class FormContainer implements OnInit {
+
+  onFormSubmit(data): void {
+    // tons of request lines
+  };
+
+}
+```
+
+```jsx title="React" subtitle="FormContainer.js"
+import React from 'react';
+
+const FormContainer = () => {
+
+  const handleSubmit = () => {
+    // tons of request lines
+  };
+
+  return (
+    <div className="form-container">
+      <SectionPresenter />
+      <FormPresenter onFormSubmit={handleSubmit} />      
+    </div>
+  );
+};
+
+export default FormContainer;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="form-presenter.component.ts"
+@Component({
+  selector: 'form-presenter'
+  template: `
+  <form className="form" (onSubmit)="onSubmit($event)">
+    <label for="name">Name</label>
+    <input name="name" />
+
+    <label for="age">Age</label>
+    <input name="age" type="number" />
+
+    <button type="submit" [disabled]="loading">
+      Save data
+    </button>
+  </form>
+`
+})
+export class FormPresenter {
+  @Output() onFormSubmit = new EventEmitter();
+
+  loading: boolean = false;
+
+  onSubmit(data): void {
+    this.onFormSubmit.emit(data);
+  }
+}
+```
+
+```jsx title="React" subtitle="FormPresenter.js"
+import React from 'react';
+
+const FormPresenter  = ({ handleSubmit }) => {
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <label for="name">Name</label>
+      <input name="name" />
+
+      <label for="age">Age</label>
+      <input name="age" type="number" />
+
+      <button type="submit" disabled={isLoading}>
+        Save data
+      </button>
+    </form>
+  );
+};
+
+export default FormPresenter;
+```
+
+</Step>
+
+<Step>
+
+```diff 11[27:46],20
+```
+
+```diff 5,15[29:48]
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="form-presenter.component.ts"
+@Component({
+  selector: 'form-presenter'
+  template: `
+  <form className="form" (onSubmit)="onSubmit($event)">
+    <label for="name">Name</label>
+    <input name="name" />
+
+    <label for="age">Age</label>
+    <input name="age" type="number" />
+
+    <button type="submit" [disabled]="loading">
+      Save data
+    </button>
+  </form>
+`
+})
+export class FormPresenter {
+  @Output() onFormSubmit = new EventEmitter();
+
+  loading: boolean = false;
+
+  onSubmit(data): void {
+    this.loading = true;
+    this.onFormSubmit.emit(data);
+  }
+}
+```
+
+```jsx title="React" subtitle="FormPresenter.js"
+import React from 'react';
+
+const FormPresenter  = ({ handleSubmit }) => {
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  return (
+    <form className="form" onSubmit={event => {
+        setIsLoading(true);
+        handleSubmit(event);
+      }}>
+      <label for="name">Name</label>
+      <input name="name" />
+
+      <label for="age">Age</label>
+      <input name="age" type="number" />
+
+      <button type="submit" disabled={isLoading}>
+        Save data
+      </button>
+    </form>
+  );
+};
+
+export default FormPresenter;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="form-presenter.component.ts"
+@Component({
+  selector: 'form-presenter'
+  template: `
+  <form className="form" (onSubmit)="onSubmit($event)">
+    <label for="name">Name</label>
+    <input name="name" />
+
+    <label for="age">Age</label>
+    <input name="age" type="number" />
+
+    <button type="submit" [disabled]="loading">
+      Save data
+    </button>
+  </form>
+`
+})
+export class FormPresenter {
+
+  @Input() loading: boolean;
+  @Output() onFormSubmit = new EventEmitter();
+
+  onSubmit(data): void {
+    this.onFormSubmit.emit(data);
+  }
+}
+```
+
+```jsx title="React" subtitle="FormPresenter.js"
+import React from 'react';
+
+const FormPresenter  = ({ handleSubmit, loading }) => {
+
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <label for="name">Name</label>
+      <input name="name" />
+
+      <label for="age">Age</label>
+      <input name="age" type="number" />
+
+      <button type="submit" disabled={loading}>
+        Save data
+      </button>
+    </form>
+  );
+};
+
+export default FormPresenter;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="form-container.component.ts"
+@Component({
+  selector: 'form-container'
+  template: `
+  <div className="form-container">
+    <section-presenter></section-presenter>
+    <form-presenter [loading]="loading" (onFormSubmit)="onFormSubmit($event)">
+    </form-presenter>
+  </div>
+  `
+})
+export class FormContainer implements OnInit {
+
+  loading: boolean = false;
+
+  onFormSubmit(data): void {
+    this.loading = true;
+    // tons of request lines
+    someRequestPromise().then(
+      res => this.loading = false;
+    );
+  };
+
+}
+```
+
+```jsx title="React" subtitle="FormContainer.js"
+import React from 'react';
+
+const FormContainer = () => {
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = () => {
+    setIsLoading(true);
+    // tons of request lines
+    someRequestPromise().then(
+      res => setIsLoading(false);
+    );
+  };
+
+  return (
+    <div className="form-container">
+      <SectionPresenter />
+      <FormPresenter loading={isLoading} onFormSubmit={handleSubmit} />      
+    </div>
+  );
+};
+
+export default FormContainer;
+```
+
+</Step>
+
+<Step>
+
+```diff 6[21:39],13,16,18:20
+```
+
+```diff 5,8,10:12,18[22:40]
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+# Wrappers
+
+---
+
+### Wrappers
+
+<ol>
+  <li>Routes</li>
+  <li>Default props</li>
+</ol>
+
+---
+
+#### /page1
+
+<FancyPage>
+  <div style={{ marginLeft: '20px' }}>
+    <h1>Page 1</h1>
+    <p>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+    </p>
+  </div>
+</FancyPage>
+
+---
+
+#### /page2
+
+<FancyPage>
+  <div style={{ marginLeft: '20px' }}>
+    <h1>Page 2</h1>
+    <p>
+      There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
+    </p>
+  </div>
+</FancyPage>
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript title="Angular" subtitle="page1.component.ts"
+@Component({
+  template: `
+  <fancy-header></fancy-header>
+  <fancy-nav></fancy-nav>
+  <h1>Page 1</h1>
+  <p>
+    bla bla bla
+  </p>
+  `
+})
+export class Page1 implements OnInit { }
+```
+
+```jsx title="React" subtitle="Page1.js"
+import React from 'react';
+
+const Page1 = () => {
+  return (
+    <>
+      <FancyHeader />
+      <FancyNav />
+      <section class="content">
+        <h1>Page 1</h1>
+        <p>
+          bla bla bla
+        </p>
+      </section>
+    </>
+  );
+};
+
+export default Page1;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="page2.component.ts"
+@Component({
+  template: `
+  <fancy-header></fancy-header>
+  <fancy-nav></fancy-nav>
+  <h1>Page 2</h1>
+  <p>
+    ble ble ble
+  </p>
+  `
+})
+export class Page2 implements OnInit { }
+```
+
+```jsx title="React" subtitle="Page2.js"
+import React from 'react';
+
+const Page2 = () => {
+  return (
+    <>
+      <FancyHeader />
+      <FancyNav />
+      <section class="content">
+        <h1>Page 2</h1>
+        <p>
+          ble ble ble
+        </p>
+      </section>
+    </>
+  );
+};
+
+export default Page2;
+```
+
+</Step>
+
+<Step>
+
+```diff
+```
+
+```diff
 ```
 
 </Step>
@@ -1262,137 +1411,561 @@ export class UserRowInfoComponent {
 
 <Step>
 
-```typescript subtitle="list-example.component.ts"
-@Component({
-  selector: 'app-list-example',
-  templateUrl: './list-example.component.html',
-  styleUrls: ['./list-example.component.scss']
-})
-export class ListExampleComponent {
-  users = [...];
-
-  customTypedActions = [
-    {
-      label: 'No',
-      type: 'button'
-    },
-    {
-      label: '',
-      type: 'toggle'
-    },
-    {
-      label: 'Mames',
-      type: 'button'
-    }
-  ];
-
-  onActionClick(index: number): void {
-    console.log('Click on action with index: ' + index);
+```typescript title="Angular" subtitle="routes.ts"
+export const ROUTES: Routes = [
+  {
+    path: 'page1',
+    component: Page1
+  },
+  {
+    path: 'page2',
+    component: Page2
   }
-}
+];
 ```
 
-```html subtitle="list-example.component.html"
-<app-user-row-info
-  *ngFor="let item of users"
-  (actionClick)="onActionClick($event)"
-  [data]="item"
-  [actionsWithType]="customTypedActions"></app-user-row-info>
+```jsx title="React" subtitle="App.js"
+const App = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/page1" component={Page1} />
+        <Route path="/page2" component={Page2} />
+      </Switch>
+    </Router>
+  );
+};
 ```
 
 </Step>
 
 <Step>
 
-```typescript
-@Component({
-  selector: 'app-list-example',
-  templateUrl: './list-example.component.html',
-  styleUrls: ['./list-example.component.scss']
-})
-export class ListExampleComponent {
-
-  users = [...];
-
-  onDetailButton(userId: number): void {
-    console.log('Redirect to detail page');
-  }
-
-  onDeleteButton(userId: number): void {
-    console.log('Delete user');
-  }
-
-}
+```typescript title="Angular" subtitle="routes.ts"
+export const ROUTES: Routes = [
+  {
+    path: 'page',
+    component: PageWrapper,
+    children: [
+      {
+        path: '1',
+        component: Page1
+      },
+      {
+        path: '2',
+        component: Page2
+      }
+    ]
+  },
+];
 ```
 
-```html
-<app-projected-user-row-info
-  *ngFor="let item of users"
-  [data]="item">
-  <button
-    type="button"
-    class="btn btn-info"
-    (click)="onDetailButton(item.id)">
-    Ver
-  </button>
-  <button
-    type="button"
-    class="btn btn-info"
-    (click)="onDeleteButton(item.id)">
-    Eliminar
-  </button>
-</app-projected-user-row-info>
+```jsx title="React" subtitle="App.js"
+const App = () => {
+  return (
+    <Switch>
+      <Route path="page" component={PageWrapper} />
+    </Switch>
+  );
+};
 ```
 
 </Step>
 
 <Step>
 
-```typescript
+```typescript title="Angular" subtitle="page-wrapper.component.ts"
 @Component({
-  selector: 'app-list-example',
-  templateUrl: './list-example.component.html',
-  styleUrls: ['./list-example.component.scss']
+  template: `
+  <fancy-header></fancy-header>
+  <fancy-nav></fancy-nav>
+  <router-outlet></router-outlet>
+  `
 })
-export class ListExampleComponent {
-
-  users = [...];
-
-  onDetailButton(userId: number): void {
-    console.log('Redirect to detail page');
-  }
-
-  onDeleteButton(userId: number): void {
-    console.log('Delete user');
-  }
-
-  onUserToggle(userId: number): void {
-    console.log('Toggle user state');
-  }
-
-}
+export class PageWrapper implements OnInit { }
 ```
 
-```
-<app-projected-user-row-info
-  *ngFor="let item of users"
-  [data]="item">
-  <div class="custom-control custom-switch">
-    <input
-      type="checkbox"
-      class="custom-control-input">
-    <label
-      (click)="onUserToggle(item.id)"
-      class="custom-control-label"></label>
-  </div>
-</app-projected-user-row-info>
+```jsx title="React" subtitle="PageWrapper.js"
+const PageWrapper = () => {
+
+  let { url } = useRouteMatch();
+
+  return (
+    <FancyHeader />
+    <FancyNav />
+    <Switch>
+      <Route path={`${url}/1`} component={Page1} />
+      <Route path={`${url}/2`} component={Page2} />
+    </Switch>
+  );
+};
 ```
 
 </Step>
 
 </CodeSurferColumns>
+
+---
+
+2. Default props!
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript title="Angular" subtitle="card.component.ts"
+@Component({
+  selector: 'card'
+  template: `
+  <div className="card">
+    <ng-container *ngTemplateOutlet="title">
+    </ng-container>
+    <p>{{ description }}</p>
+    <ng-content></ng-content>
+  </div>
+  `
+})
+export class Card implements OnInit {
+
+  @Input() title: TemplateRef;
+  @Input() description: string;
+
+}
+```
+
+```jsx title="React" subtitle="Card.js"
+import React from 'react';
+
+const Card = ({ 
+  title, 
+  description, 
+  children
+}) => {
+  return (
+    <div className="card">
+      { title }
+      <p>{ description }</p>
+      {children}
+    </div>
+  );
+};
+
+export default Card;
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript title="Angular" subtitle="likeable-card.component.ts"
+@Component({
+  selector: 'likeable-card'
+  template: `
+  <card 
+    [title]="title" 
+    [description]="description">
+    <button (click)="onLikeClick.emit()">
+      Like
+    </button>
+    <ng-content></ng-content>
+  </card>
+`
+})
+export class LikeableCard implements OnInit {
+
+  @Input() title: TemplateRef;
+  @Input() description: string;
+
+  @Output() onLikeClick = new EventEmitter<void>();
+
+}
+```
+
+```jsx title="React" subtitle="LikableCard.js"
+import React from 'react';
+
+const LikableCard = ({ 
+  title, 
+  description,
+  handleLikeClick,
+  children
+}) => {
+  return (
+    <Card 
+      title={title} 
+      description={description}>
+      <button onClick={handleLikeClick}>
+        Like
+      </button>
+      {children}
+    </Card>
+  );
+};
+
+export default LikableCard;
+```
+
+</Step>
+
+<Step>
+
+```diff 7:9,19
+```
+
+```diff 6,13:15
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="likeable-card.component.ts"
+@Component({
+  selector: 'likeable-card'
+  template: `
+  <card 
+    [title]="title" 
+    [description]="description"
+    [link]="link">
+    <button (click)="onLikeClick.emit()">
+      Like
+    </button>
+    <ng-content></ng-content>
+  </card>
+`
+})
+export class LikeableCard implements OnInit {
+
+  @Input() title: TemplateRef;
+  @Input() description: string;
+  @Input() link?: string; // Oh no, oh no no no.mp3
+
+  @Output() onLikeClick = new EventEmitter<void>();
+
+}
+```
+
+```jsx title="React" subtitle="LikableCard.js"
+import React from 'react';
+
+const LikableCard = ({ 
+  title, 
+  description,
+  handleLikeClick,
+  link, // Oh no, oh no no no.mp3
+  children
+}) => {
+  return (
+    <Card 
+      title={title} 
+      description={description}
+      link={link}>
+      <button onClick={handleLikeClick}>
+        Like
+      </button>
+      {children}
+    </Card>
+  );
+};
+
+export default LikableCard;
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript title="Angular" subtitle="fancy-input.component.ts"
+@Component({
+  selector: 'fancy-input'
+  template: `<input [type]="type" [placeholder]="placeholder" />`
+})
+export class FancyInput implements OnInit {
+
+  @Input() type: string;
+  @Input() placeholder: string;
+
+}
+```
+
+```jsx title="React" subtitle="FancyInput.js"
+import React from 'react';
+
+const FancyInput = ({ type, placeholder }) => (
+  <input type={type} placeholder={placeholder} />
+);
+
+export default FancyInput;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="fancy-input.component.ts"
+@Directive({
+  selector: '[attrs]'
+})
+export class AttrsDirective {
+
+  constructor(private el: ElementRef, private renderer: Renderer2) { }
+
+  @Input() attrs: any;
+
+  ngOnInit(){
+    if (this.attrs) {
+      Object.keys(this.attrs).forEach(attributeName =>
+        this.renderer.setAttribute(
+          this.el, 
+          attributeName, 
+          this.attrs[attributeName]
+        ));
+    }
+  }
+}
+
+@Component({
+  selector: 'fancy-input'
+  template: `<input [attrs]="nativeInputAttrs" />`
+})
+export class FancyInput implements OnInit {
+
+  @Input() nativeInputAttrs: any;
+
+}
+```
+
+```jsx title="React" subtitle="FancyInput.js"
+import React from 'react';
+
+const FancyInput = ({ propX, ...props }) => <input {...props} />;
+
+export default FancyInput;
+```
+
+</Step>
+
+<Step>
+
+```html title="Angular" subtitle="input-client.component.html"
+...
+<fancy-input [nativeInputAttrs]="{
+  placeholder: 'Fancy placeholder',
+  'aria-label': 'An aria label',
+}"></fancy-input>
+...
+```
+
+```jsx title="React" subtitle="InputClient.js"
+...
+<FancyInput 
+  placeholder="Fancy placeholder"
+  aria-label="An aria label" />
+...
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+# What about testing
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```typescript title="Angular" subtitle="fancy-input.component.ts"
+@Component({
+  selector: 'fancy-input'
+  template: `
+  <input [attrs]="nativeInputAttrs" />
+  <div class="error">{{ errorMessage }}</div>
+  `
+})
+export class FancyInput implements OnInit {
+
+  @Input() nativeInputAttrs: any;
+  @Input() propX: any;
+
+  errorMessage: string;
+
+}
+```
+
+```jsx title="React" subtitle="FancyInput.js"
+import React from 'react';
+
+const FancyInput = ({ propX, ...props }) => {
+
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  return (
+    <>
+      <input {...props} />
+      <div class="error">{{ errorMessage }}</div>
+    </>
+  );
+};
+
+export default FancyInput;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="fancy-input.component.ts"
+@Component({
+  selector: 'fancy-input'
+  template: `
+  <input [attrs]="nativeInputAttrs" />
+  <div class="error">{{ errorMessage }}</div>
+  `
+})
+export class FancyInput implements OnInit {
+
+  @Input() nativeInputAttrs: any;
+  @Input() propX: any;
+
+  errorMessage: string;
+
+  updateErrorMessage(): void {
+    const actualError = someErrorMapping(this.propX);
+    this.errorMessage = actualError;
+  }
+
+}
+```
+
+```jsx title="React" subtitle="FancyInput.js"
+import React from 'react';
+
+const FancyInput = ({ propX, ...props }) => {
+
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const updateErrorMessage = () => {
+    const actualError = someErrorMapping(propX);
+    setErrorMessage(actualError);
+  }
+
+  return (
+    <>
+      <input {...props} />
+      <div class="error">{{ errorMessage }}</div>
+    </>
+  );
+};
+
+export default FancyInput;
+```
+
+</Step>
+
+<Step>
+
+```typescript title="Angular" subtitle="fancy-input.component.ts"
+
+const getErrorMessage = (propX) => {
+  return someErrorMapping(propX);
+}
+
+@Component({
+  selector: 'fancy-input'
+  template: `
+  <input [attrs]="nativeInputAttrs" />
+  <div class="error">{{ errorMessage }}</div>
+  `
+})
+export class FancyInput implements OnInit {
+
+  @Input() nativeInputAttrs: any;
+  @Input() propX: any;
+
+  errorMessage: string;
+
+  updateErrorMessage(): void {
+    this.errorMessage = getErrorMessage(this.propX);
+  }
+
+}
+```
+
+```jsx title="React" subtitle="FancyInput.js"
+import React from 'react';
+
+const updateErrorMessage = (propX, setErrorMessage) => {
+  const actualError = someErrorMapping(propX);
+  setErrorMessage(actualError);
+}
+
+const FancyInput = ({ propX, ...props }) => {
+
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  return (
+    <>
+      <input {...props} />
+      <div class="error">{{ errorMessage }}</div>
+    </>
+  );
+};
+
+export default FancyInput;
+```
+
+</Step>
+
+<Step>
+
+```diff
+```
+
+```diff
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+# Links!
+1. [Testing implementation details](https://kentcdodds.com/blog/testing-implementation-details)
+2. [Integrated tests are a scam!](https://blog.thecodewhisperer.com/permalink/integrated-tests-are-a-scam)
+
+---
+
+# ¡Gracias! 👋
 
 ---
 
 Repo:  
-[https://github.com/ESpittingCode/contentprojection](https://github.com/ESpittingCode/contentprojection)
+[https://github.com/djguzmanc/content-projection-slides/tree/component-design-practices](https://github.com/djguzmanc/content-projection-slides/tree/component-design-practices)
+
+---
+
+<img src={end1} style={{ height: '100%' }} />
+
+---
+
+<img src={end2} style={{ height: '100%' }} />
+
